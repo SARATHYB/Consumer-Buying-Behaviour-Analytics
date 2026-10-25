@@ -1,1 +1,222 @@
-<iframe width="600" height="450" src="https://datastudio.google.com/embed/reporting/b86c3e5a-80db-4870-804f-2e0615fb6f12/page/8MQbF" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Dashboards</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    height: 100vh;
+    background: #f4f6f8;
+    color: #1f2937;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: #111827;
+    color: #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+  }
+
+  .sidebar h1 {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0 24px 20px;
+    letter-spacing: 0.5px;
+    color: #f9fafb;
+    border-bottom: 1px solid #1f2937;
+    margin-bottom: 16px;
+  }
+
+  .nav-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 14px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .nav-btn:hover {
+    background: #1f2937;
+    color: #e5e7eb;
+  }
+
+  .nav-btn.active {
+    background: #1f2937;
+    color: #ffffff;
+    border-left-color: #3b82f6;
+    font-weight: 500;
+  }
+
+  /* ---------- Content ---------- */
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .content-header {
+    padding: 16px 24px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .content-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .content-header a {
+    font-size: 13px;
+    color: #3b82f6;
+    text-decoration: none;
+  }
+
+  .content-header a:hover { text-decoration: underline; }
+
+  .iframe-wrap {
+    flex: 1;
+    position: relative;
+    background: #ffffff;
+  }
+
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+
+    .sidebar {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 8px;
+      gap: 4px;
+    }
+
+    .sidebar h1 { display: none; }
+
+    .nav-btn {
+      white-space: nowrap;
+      width: auto;
+      padding: 8px 14px;
+      border-left: none;
+      border-bottom: 3px solid transparent;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .nav-btn.active {
+      border-left-color: transparent;
+      border-bottom-color: #3b82f6;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <h1>📊 Dashboards</h1>
+    <button class="nav-btn active" data-index="0">Amazon Dashboard</button>
+    <button class="nav-btn" data-index="1">Flipkart Dashboard</button>
+    <button class="nav-btn" data-index="2">Consumer Research & Decision Drivers</button>
+    <button class="nav-btn" data-index="3">Demographic</button>
+  </aside>
+
+  <main class="content">
+    <div class="content-header">
+      <h2 id="title">Amazon Dashboard</h2>
+      <a id="open-link" href="#" target="_blank" rel="noopener">Open in new tab ↗</a>
+    </div>
+    <div class="iframe-wrap">
+      <iframe
+        id="dashboard-frame"
+        allowfullscreen
+        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+      </iframe>
+    </div>
+  </main>
+
+<script>
+  // ------------------------------------------------------------------
+  // 1. PASTE YOUR 5 EMBED URLs HERE
+  //    Get them from Looker Studio: Share > Embed report > Embed URL
+  //    (it looks like https://lookerstudio.google.com/embed/reporting/xxxxx/page/xxxxx)
+  // ------------------------------------------------------------------
+  const dashboards = [
+    {
+      title: "Amazon Dashboard",
+      url: "https://datastudio.google.com/embed/reporting/b86c3e5a-80db-4870-804f-2e0615fb6f12/page/8MQbF"
+    },
+    {
+      title: "Flipkart Dashboard",
+      url: "https://datastudio.google.com/embed/reporting/0fa8f1d2-d4f8-462e-8c92-99eb39348236/page/kgUbF"
+    },
+    {
+      title: "Consumer Research & Decision Drivers",
+      url: "https://datastudio.google.com/embed/reporting/cebb68a9-0b05-440b-8a09-2290d618a565/page/nJIYF"
+    },
+    {
+      title: "Demographic",
+      url: "https://datastudio.google.com/embed/reporting/462c2d4f-4087-404a-9b7d-3b941b75ba77/page/ZRIYF"
+    }
+  ];
+
+  // ------------------------------------------------------------------
+  // 2. Navigation logic — no need to edit below this line
+  // ------------------------------------------------------------------
+  const buttons = document.querySelectorAll(".nav-btn");
+  const frame   = document.getElementById("dashboard-frame");
+  const titleEl = document.getElementById("title");
+  const openLink = document.getElementById("open-link");
+
+  function show(index) {
+    const dash = dashboards[index];
+    if (!dash) return;
+
+    frame.src = dash.url;          // load the iframe on demand
+    titleEl.textContent = dash.title;
+    openLink.href = dash.url.replace("/embed/reporting/", "/reporting/"); // non-embed link
+
+    buttons.forEach((btn, i) => btn.classList.toggle("active", i === index));
+
+    // Optional: update URL hash so the selected tab is bookmarkable
+    history.replaceState(null, "", `#dashboard-${index + 1}`);
+  }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => show(Number(btn.dataset.index)));
+  });
+
+  // Deep-link support: opening page with #dashboard-3 loads the 3rd one
+  const hashMatch = location.hash.match(/^#dashboard-(\d)$/);
+  const startIndex = hashMatch ? Math.min(Number(hashMatch[1]) - 1, dashboards.length - 1) : 0;
+  show(startIndex);
+</script>
+
+</body>
+</html>
