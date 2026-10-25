@@ -24,6 +24,7 @@
     display: flex;
     flex-direction: column;
     padding: 24px 0;
+    overflow-y: auto;
   }
 
   .sidebar h1 {
@@ -62,6 +63,21 @@
     font-weight: 500;
   }
 
+  /* Highlight the Contribute button */
+  .nav-btn.contribute {
+    color: #34d399;
+    font-weight: 500;
+  }
+  .nav-btn.contribute.active {
+    border-left-color: #34d399;
+  }
+
+  .nav-divider {
+    height: 1px;
+    background: #1f2937;
+    margin: 12px 16px;
+  }
+
   /* ---------- Content ---------- */
   .content {
     flex: 1;
@@ -77,6 +93,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
   }
 
   .content-header h2 {
@@ -88,22 +105,107 @@
     font-size: 13px;
     color: #3b82f6;
     text-decoration: none;
+    white-space: nowrap;
   }
 
   .content-header a:hover { text-decoration: underline; }
 
-  .iframe-wrap {
+  /* ---------- Views ---------- */
+  .view {
     flex: 1;
     position: relative;
+    overflow: auto;
     background: #ffffff;
+    display: none;
   }
 
-  iframe {
+  .view.active { display: block; }
+
+  /* Dashboard iframe */
+  #view-dashboards {
+    padding: 0;
+  }
+
+  #view-dashboards iframe {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     border: none;
+  }
+
+  /* Notebooks view */
+  #view-notebooks {
+    padding: 24px;
+    background: #f4f6f8;
+  }
+
+  .notebook-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow-x: auto;
+  }
+
+  .notebook-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #111827;
+  }
+
+  /* Contribute view */
+  #view-contribute {
+    background: #f4f6f8;
+    display: none;
+  }
+  #view-contribute.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px;
+  }
+
+  .contribute-hero {
+    max-width: 720px;
+    width: 100%;
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .contribute-hero h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .contribute-hero p {
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+
+  .form-wrap {
+    max-width: 720px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .form-wrap iframe {
+    width: 100%;
+    height: 900px;
+    border: none;
+    display: block;
   }
 
   /* ---------- Mobile ---------- */
@@ -116,9 +218,11 @@
       overflow-x: auto;
       padding: 8px;
       gap: 4px;
+      height: auto;
     }
 
     .sidebar h1 { display: none; }
+    .nav-divider { display: none; }
 
     .nav-btn {
       white-space: nowrap;
@@ -134,6 +238,13 @@
       border-left-color: transparent;
       border-bottom-color: #3b82f6;
     }
+
+    .nav-btn.contribute.active {
+      border-bottom-color: #34d399;
+    }
+
+    #view-notebooks { padding: 12px; }
+    .form-wrap iframe { height: 700px; }
   }
 </style>
 </head>
@@ -141,10 +252,18 @@
 
   <aside class="sidebar">
     <h1>📊 Dashboards</h1>
-    <button class="nav-btn active" data-index="0">Amazon Dashboard</button>
-    <button class="nav-btn" data-index="1">Flipkart Dashboard</button>
-    <button class="nav-btn" data-index="2">Consumer Research & Decision Drivers</button>
-    <button class="nav-btn" data-index="3">Demographic</button>
+    <button class="nav-btn active" data-view="dashboards" data-index="0">Amazon Dashboard</button>
+    <button class="nav-btn" data-view="dashboards" data-index="1">Flipkart Dashboard</button>
+    <button class="nav-btn" data-view="dashboards" data-index="2">Consumer Research & Decision Drivers</button>
+    <button class="nav-btn" data-view="dashboards" data-index="3">Demographic</button>
+
+    <div class="nav-divider"></div>
+
+    <button class="nav-btn" data-view="notebooks">📓 Notebooks</button>
+
+    <div class="nav-divider"></div>
+
+    <button class="nav-btn contribute" data-view="contribute">✍️ Contribute</button>
   </aside>
 
   <main class="content">
@@ -152,20 +271,54 @@
       <h2 id="title">Amazon Dashboard</h2>
       <a id="open-link" href="#" target="_blank" rel="noopener">Open in new tab ↗</a>
     </div>
-    <div class="iframe-wrap">
+
+    <!-- Dashboards view -->
+    <div class="view active" id="view-dashboards">
       <iframe
         id="dashboard-frame"
         allowfullscreen
         sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
       </iframe>
     </div>
+
+    <!-- Notebooks view -->
+    <div class="view" id="view-notebooks">
+      <div class="notebook-card">
+        <h3>📓 Notebook 1</h3>
+        <script src="https://gist.github.com/SARATHYB/236f0ff75315bcfada9febf54e60c0c5.js"></script>
+      </div>
+
+      <div class="notebook-card">
+        <h3>📓 Notebook 2</h3>
+        <script src="https://gist.github.com/SARATHYB/0bea0fe822675346da2f3e9f89414499.js"></script>
+      </div>
+
+      <div class="notebook-card">
+        <h3>📓 Notebook 3</h3>
+        <script src="https://gist.github.com/SARATHYB/b7a40e6e0b60e7973223a7c22e78b35e.js"></script>
+      </div>
+    </div>
+
+    <!-- Contribute view -->
+    <div class="view" id="view-contribute">
+      <div class="contribute-hero">
+        <h2>Would you like to Contribute to the data?</h2>
+        <p>It just takes 5 mins — your input helps make these dashboards richer and more accurate. 🙏</p>
+      </div>
+      <div class="form-wrap">
+        <iframe
+          src="https://docs.google.com/forms/d/e/1FAIpQLScOqUJzz9FEh2zLdTTlH1Wivx-8aP3hSoN8NQvGz23MMNocKw/viewform?embedded=true"
+          title="Contribute to the data"
+          allowfullscreen>
+          Loading…
+        </iframe>
+      </div>
+    </div>
   </main>
 
 <script>
   // ------------------------------------------------------------------
-  // 1. PASTE YOUR 5 EMBED URLs HERE
-  //    Get them from Looker Studio: Share > Embed report > Embed URL
-  //    (it looks like https://lookerstudio.google.com/embed/reporting/xxxxx/page/xxxxx)
+  // 1. DASHBOARD EMBED URLs
   // ------------------------------------------------------------------
   const dashboards = [
     {
@@ -186,36 +339,119 @@
     }
   ];
 
+  const FORM_URL =
+    "https://docs.google.com/forms/d/e/1FAIpQLScOqUJzz9FEh2zLdTTlH1Wivx-8aP3hSoN8NQvGz23MMNocKw/viewform";
+
   // ------------------------------------------------------------------
-  // 2. Navigation logic — no need to edit below this line
+  // 2. Navigation logic
   // ------------------------------------------------------------------
-  const buttons = document.querySelectorAll(".nav-btn");
-  const frame   = document.getElementById("dashboard-frame");
-  const titleEl = document.getElementById("title");
+  const buttons  = document.querySelectorAll(".nav-btn");
+  const frame    = document.getElementById("dashboard-frame");
+  const titleEl  = document.getElementById("title");
   const openLink = document.getElementById("open-link");
 
-  function show(index) {
-    const dash = dashboards[index];
-    if (!dash) return;
+  const views = {
+    dashboards: document.getElementById("view-dashboards"),
+    notebooks:  document.getElementById("view-notebooks"),
+    contribute: document.getElementById("view-contribute")
+  };
 
-    frame.src = dash.url;          // load the iframe on demand
-    titleEl.textContent = dash.title;
-    openLink.href = dash.url.replace("/embed/reporting/", "/reporting/"); // non-embed link
+  let currentDash = 0;
 
-    buttons.forEach((btn, i) => btn.classList.toggle("active", i === index));
+  function setActiveButton(predicate) {
+    buttons.forEach((btn) => btn.classList.toggle("active", predicate(btn)));
+  }
 
-    // Optional: update URL hash so the selected tab is bookmarkable
-    history.replaceState(null, "", `#dashboard-${index + 1}`);
+  function showView(viewName) {
+    // Toggle views
+    Object.entries(views).forEach(([name, el]) => {
+      el.classList.toggle("active", name === viewName);
+    });
+
+    // Update header text + link visibility
+    if (viewName === "dashboards") {
+      const dash = dashboards[currentDash];
+      frame.src = dash.url;
+      titleEl.textContent = dash.title;
+      openLink.style.display = "inline";
+      openLink.href = dash.url.replace("/embed/reporting/", "/reporting/");
+    } else if (viewName === "notebooks") {
+      titleEl.textContent = "📓 Notebooks";
+      openLink.style.display = "none";
+    } else if (viewName === "contribute") {
+      titleEl.textContent = "✍️ Contribute to the Data";
+      openLink.style.display = "inline";
+      openLink.href = FORM_URL + "?usp=sharing";
+      openLink.textContent = "Open form in new tab ↗";
+      history.replaceState(null, "", "#contribute");
+      return;
+    }
+
+    if (viewName === "dashboards") {
+      openLink.textContent = "Open in new tab ↗";
+      history.replaceState(null, "", `#dashboard-${currentDash + 1}`);
+    } else {
+      history.replaceState(null, "", `#${viewName}`);
+    }
+  }
+
+  function showDashboard(index) {
+    if (!dashboards[index]) return;
+    currentDash = index;
+    showView("dashboards");
   }
 
   buttons.forEach((btn) => {
-    btn.addEventListener("click", () => show(Number(btn.dataset.index)));
+    btn.addEventListener("click", () => {
+      const view = btn.dataset.view;
+      if (view === "dashboards") {
+        showDashboard(Number(btn.dataset.index));
+      } else {
+        showView(view);
+      }
+
+      // Update active button highlight
+      setActiveButton((b) => b === btn);
+    });
   });
 
-  // Deep-link support: opening page with #dashboard-3 loads the 3rd one
-  const hashMatch = location.hash.match(/^#dashboard-(\d)$/);
-  const startIndex = hashMatch ? Math.min(Number(hashMatch[1]) - 1, dashboards.length - 1) : 0;
-  show(startIndex);
+  // ------------------------------------------------------------------
+  // 3. Deep-link support
+  //    #dashboard-1..4, #notebooks, #contribute
+  // ------------------------------------------------------------------
+  function initFromHash() {
+    const hash = location.hash;
+
+    const dashMatch = hash.match(/^#dashboard-(\d)$/);
+    if (dashMatch) {
+      const i = Math.min(Number(dashMatch[1]) - 1, dashboards.length - 1);
+      currentDash = i;
+      showView("dashboards");
+      setActiveButton((b) => b.dataset.view === "dashboards" && Number(b.dataset.index) === i);
+      return;
+    }
+
+    if (hash === "#notebooks") {
+      showView("notebooks");
+      setActiveButton((b) => b.dataset.view === "notebooks");
+      return;
+    }
+
+    if (hash === "#contribute") {
+      showView("contribute");
+      setActiveButton((b) => b.dataset.view === "contribute");
+      return;
+    }
+
+    // Default
+    showDashboard(0);
+    setActiveButton((b) => b.dataset.view === "dashboards" && Number(b.dataset.index) === 0);
+  }
+
+  initFromHash();
+
+  // Listen for back/forward
+  window.addEventListener("hashchange", initFromHash);
 </script>
 
 </body>
